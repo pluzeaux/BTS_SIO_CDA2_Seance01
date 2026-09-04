@@ -1,4 +1,4 @@
-namespace CompteBancaire;
+namespace Strategie.Model;
 
 public sealed class CompteCourant : CompteBancaire
 {
@@ -10,9 +10,16 @@ public sealed class CompteCourant : CompteBancaire
 
     public override void Debiter(decimal montant)
     {
-        if (montant <= Solde + DecouvertAutorise)
+        if (montant <= 0)
         {
-            Solde -= montant + Math.Max(1m, montant * 0.02m);
+            throw new ArgumentException("Le montant doit être strictement positif.");
+        }
+
+        decimal frais = Math.Max(1m, montant * 0.02m);
+
+        if (montant + frais <= Solde + DecouvertAutorise)
+        {
+            Solde -= montant + frais;
         }
         else
         {
